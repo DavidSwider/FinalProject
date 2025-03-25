@@ -24,16 +24,16 @@ const Footer: React.FC = () => {
           </button>
         )}
         <h4>
-          Made with{' '}
+          Made for your convenience.{' '}
           <span
             className="emoji"
             role="img"
-            aria-label="heart"
+            aria-label="checkmark"
             aria-hidden="false"
           >
-            ❤️
+            ✔️
           </span>{' '}
-          by the Tech Thoughts team.
+          
         </h4>
       </div>
     </footer>
