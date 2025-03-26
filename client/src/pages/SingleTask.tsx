@@ -4,16 +4,16 @@ import { useQuery } from '@apollo/client';
 import CommentList from '../components/CommentList/index.tsx';
 import CommentForm from '../components/CommentForm/index.tsx';
 
-import { QUERY_SINGLE_THOUGHT } from '../utils/queries.ts';
+import { QUERY_SINGLE_TASK } from '../utils/queries.ts';
 
-const SingleThought = () => {
-  const { thoughtId } = useParams();
+const SingleTask = () => {
+  const { taskId } = useParams();
 
-  const { loading, data } = useQuery(QUERY_SINGLE_THOUGHT, {
-    variables: { thoughtId: thoughtId },
+  const { loading, data } = useQuery(QUERY_SINGLE_TASK, {
+    variables: { taskId: taskId },
   });
 
-  const thought = data?.thought || {};
+  const task = data?.task || {};
 
   if (loading) {
     return <div>Loading...</div>;
@@ -21,9 +21,9 @@ const SingleThought = () => {
   return (
     <div className="my-3">
       <h3 className="card-header bg-dark text-light p-2 m-0">
-        {thought.thoughtAuthor} <br />
+        {task.taskAuthor} <br />
         <span style={{ fontSize: '1rem' }}>
-          Added this item on {new Date(Number(thought.createdAt)).toLocaleString()}
+          Added this item on {new Date(Number(task.createdAt)).toLocaleString()}
         </span>
       </h3>
       <div className="bg-light py-4">
@@ -36,18 +36,18 @@ const SingleThought = () => {
             lineHeight: '1.5',
           }}
         >
-          {thought.thoughtText}
+          {task.taskText}
         </blockquote>
       </div>
 
       <div className="my-5">
-        <CommentList comments={thought.comments} />
+        <CommentList comments={task.comments} />
       </div>
       <div className="m-3 p-4" style={{ border: '1px dotted #1a1a1a' }}>
-        <CommentForm thoughtId={thought._id} />
+        <CommentForm taskId={task._id} />
       </div>
     </div>
   );
 };
 
-export default SingleThought;
+export default SingleTask;

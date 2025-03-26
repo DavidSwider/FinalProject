@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/client';
 
 import { ADD_COMMENT } from '../../utils/mutations';
 
-const CommentForm = ({ thoughtId }: any) => {
+const CommentForm = ({ taskId }: any) => {
   const [commentText, setCommentText] = useState('');
   const [characterCount, setCharacterCount] = useState(0);
 
@@ -15,7 +15,7 @@ const CommentForm = ({ thoughtId }: any) => {
     try {
       await addComment({
         variables: { 
-          thoughtId, commentText 
+          taskId, commentText 
         }
       });
 
@@ -36,7 +36,7 @@ const CommentForm = ({ thoughtId }: any) => {
 
   return (
     <div>
-      <h4>What are your thoughts on this thought?</h4>
+      <h4>Change your Item as you would like.</h4>
       <p
         className={`m-0 ${
           characterCount === 280 || error ? 'text-danger' : ''
@@ -62,7 +62,7 @@ const CommentForm = ({ thoughtId }: any) => {
 
         <div className="col-12 col-lg-3">
           <button className="btn btn-primary btn-block py-3" type="submit">
-            Add Comment
+            Update Item
           </button>
         </div>
       </form>

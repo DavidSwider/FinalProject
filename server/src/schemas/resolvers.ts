@@ -1,4 +1,4 @@
-import { Thought, User } from '../models/index.js';
+import { Task, User } from '../models/index.js';
 import { signToken, AuthenticationError } from '../utils/auth.js'; 
 
 // Define types for the arguments
@@ -19,47 +19,40 @@ interface UserArgs {
   username: string;
 }
 
-interface ThoughtArgs {
-  thoughtId: string;
+interface TaskArgs {
+  taskId: string;
+  isCompleted?: boolean;
 }
 
-interface AddThoughtArgs {
+interface AddTaskArgs {
+  taskId?: string;
   input:{
-    thoughtText: string;
-    thoughtAuthor: string;
+    taskText: string;
+    category: string;
   }
 }
 
-interface AddCommentArgs {
-  thoughtId: string;
-  commentText: string;
-}
-
-interface RemoveCommentArgs {
-  thoughtId: string;
-  commentId: string;
-}
 
 const resolvers = {
   Query: {
     users: async () => {
-      return User.find().populate('thoughts');
+      return User.find().populate('tasks');
     },
     user: async (_parent: any, { username }: UserArgs) => {
-      return User.findOne({ username }).populate('thoughts');
+      return User.findOne({ username }).populate('tasks');
     },
-    thoughts: async () => {
-      return await Thought.find().sort({ createdAt: -1 });
+    tasks: async () => {
+      return await Task.find().sort({ createdAt: -1 });
     },
-    thought: async (_parent: any, { thoughtId }: ThoughtArgs) => {
-      return await Thought.findOne({ _id: thoughtId });
+    task: async (_parent: any, { taskId }: TaskArgs) => {
+      return await Task.findOne({ _id: taskId });
     },
     // Query to get the authenticated user's information
     // The 'me' query relies on the context to check if the user is authenticated
     me: async (_parent: any, _args: any, context: any) => {
-      // If the user is authenticated, find and return the user's information along with their thoughts
+      // If the user is authenticated, find and return the user's information along with their tasks
       if (context.user) {
-        return User.findOne({ _id: context.user._id }).populate('thoughts');
+        return User.findOne({ _id: context.user._id }).populate('tasks');
       }
       // If the user is not authenticated, throw an AuthenticationError
       throw new AuthenticationError('Could not authenticate user.');
@@ -100,74 +93,60 @@ const resolvers = {
       // Return the token and the user
       return { token, user };
     },
-    addThought: async (_parent: any, { input }: AddThoughtArgs, context: any) => {
+    addTask: async (_parent: any, { input }: AddTaskArgs, context: any) => {
       if (context.user) {
-        const thought = await Thought.create({ ...input });
+        const task = await Task.create({ ...input });
 
         await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $addToSet: { thoughts: thought._id } }
+          { $addToSet: { tasks: task._id } }
         );
 
-        return thought;
+        return "task added";
       }
-      throw AuthenticationError;
-      ('You need to be logged in!');
+      throw new AuthenticationError('You need to be logged in!');
     },
-    addComment: async (_parent: any, { thoughtId, commentText }: AddCommentArgs, context: any) => {
+    completeTask: async (_parent: any, { taskId, isCompleted }: TaskArgs, context: any) => {
+      console.log("Complete task")
       if (context.user) {
-        return Thought.findOneAndUpdate(
-          { _id: thoughtId },
-          {
-            $addToSet: {
-              comments: { commentText, commentAuthor: context.user.username },
-            },
-          },
-          {
-            new: true,
-            runValidators: true,
-          }
+        return Task.findOneAndUpdate(
+          { _id: taskId },
+          { $set:{isCompleted } },
+          { new: true }
         );
       }
-      throw AuthenticationError;
+      throw new AuthenticationError('You need to be logged in!');
     },
-    removeThought: async (_parent: any, { thoughtId }: ThoughtArgs, context: any) => {
+    removeTask: async (_parent: any, { taskId }: TaskArgs, context: any) => {
       if (context.user) {
-        const thought = await Thought.findOneAndDelete({
-          _id: thoughtId,
-          thoughtAuthor: context.user.username,
+        const task = await Task.findOneAndDelete({
+          _id: taskId,
         });
 
-        if(!thought){
-          throw AuthenticationError;
+        if(!task){
+          throw new AuthenticationError('No Task Found!');
         }
 
         await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $pull: { thoughts: thought._id } }
+          { $pull: { tasks: task._id } }
         );
 
-        return thought;
+        return task;
       }
-      throw AuthenticationError;
+      throw new AuthenticationError('You need to be logged in!');
     },
-    removeComment: async (_parent: any, { thoughtId, commentId }: RemoveCommentArgs, context: any) => {
+    updateTask: async (_parent: any, { taskId, input }: AddTaskArgs, context: any) => {
       if (context.user) {
-        return Thought.findOneAndUpdate(
-          { _id: thoughtId },
-          {
-            $pull: {
-              comments: {
-                _id: commentId,
-                commentAuthor: context.user.username,
-              },
-            },
-          },
+        return await Task.findOneAndUpdate(
+          { _id: taskId },
+          { $set:{...input} },
           { new: true }
         );
+        
       }
-      throw AuthenticationError;
-    },
+      throw new AuthenticationError('You need to be logged in!');
+    }
   },
 };
 

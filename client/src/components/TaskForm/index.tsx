@@ -2,21 +2,21 @@ import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 
-import { ADD_THOUGHT } from '../../utils/mutations';
-import { QUERY_THOUGHTS, QUERY_ME } from '../../utils/queries';
+import { ADD_TASK } from '../../utils/mutations';
+import { QUERY_TASKS, QUERY_ME } from '../../utils/queries';
 
 import Auth from '../../utils/auth';
 
-const ThoughtForm = () => {
-  const [thoughtText, setThoughtText] = useState('');
+const TaskForm = () => {
+  const [taskText, setTaskText] = useState('');
 
   const [characterCount, setCharacterCount] = useState(0);
 
-  const [addThought, { error }] = useMutation
-  (ADD_THOUGHT, {
+  const [addTask, { error }] = useMutation
+  (ADD_TASK, {
     refetchQueries: [
-      QUERY_THOUGHTS,
-      'getThoughts',
+      QUERY_TASKS,
+      'getTasks',
       QUERY_ME,
       'me'
     ]
@@ -26,14 +26,14 @@ const ThoughtForm = () => {
     event.preventDefault();
 
     try {
-      await addThought({
+      await addTask({
         variables: { input:{
-          thoughtText,
-          thoughtAuthor: Auth.getProfile().data.username,
+          taskText,
+          taskAuthor: Auth.getProfile().data.username,
         }},
       });
 
-      setThoughtText('');
+      setTaskText('');
     } catch (err) {
       console.error(err);
     }
@@ -42,8 +42,8 @@ const ThoughtForm = () => {
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = event.target;
 
-    if (name === 'thoughtText' && value.length <= 280) {
-      setThoughtText(value);
+    if (name === 'taskText' && value.length <= 280) {
+      setTaskText(value);
       setCharacterCount(value.length);
     }
   };
@@ -67,9 +67,9 @@ const ThoughtForm = () => {
           >
             <div className="col-12 col-lg-9">
               <textarea
-                name="thoughtText"
+                name="taskText"
                 placeholder="Add a New Item Here..."
-                value={thoughtText}
+                value={taskText}
                 className="form-input w-100"
                 style={{ lineHeight: '1.5', resize: 'vertical' }}
                 onChange={handleChange}
@@ -98,4 +98,4 @@ const ThoughtForm = () => {
   );
 };
 
-export default ThoughtForm;
+export default TaskForm;

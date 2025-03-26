@@ -1,13 +1,13 @@
 import { useQuery } from '@apollo/client';
 
-import ThoughtList from '../components/ThoughtList/index.tsx';
-import ThoughtForm from '../components/ThoughtForm/index.tsx';
+import TaskList from '../components/TaskList/index.tsx';
+import TaskForm from '../components/TaskForm/index.tsx';
 
-import { QUERY_THOUGHTS } from '../utils/queries.ts';
+import { QUERY_TASKS } from '../utils/queries.ts';
 
 const Home = () => {
-  const { loading, data } = useQuery(QUERY_THOUGHTS);
-  const thoughts = data?.thoughts || [];
+  const { loading, data } = useQuery(QUERY_TASKS);
+  const tasks = data?.tasks || [];
 
   return (
     <main>
@@ -16,15 +16,15 @@ const Home = () => {
           className="col-12 col-md-10 mb-3 p-3"
           style={{ border: '1px dotted #1a1a1a' }}
         >
-          <ThoughtForm />
+          <TaskForm />
         </div>
         <div className="col-12 col-md-8 mb-3">
           {loading ? (
             <div>Loading...</div>
           ) : (
-            <ThoughtList
-              thoughts={thoughts}
-              title="Some Feed for Thought(s)..."
+            <TaskList
+              tasks={tasks}
+              title="Some Feed for Task(s)..."
             />
           )}
         </div>

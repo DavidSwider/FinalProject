@@ -11,7 +11,7 @@ interface CommentListProps {
 const CommentList: React.FC<CommentListProps> = ({ comments = [] }) => {
   console.log(comments);
   if (!comments.length) {
-    return <h3>No Comments Yet</h3>;
+    return <h3>Edit your Task</h3>;
   }
 
   return (

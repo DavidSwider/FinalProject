@@ -4,26 +4,21 @@ const typeDefs = `
     username: String
     email: String
     password: String
-    thoughts: [Thought]!
+    tasks: [Task]!
   }
 
-  type Thought {
+  type Task {
     _id: ID
-    thoughtText: String
-    thoughtAuthor: String
+    taskText: String
     createdAt: String
-    comments: [Comment]!
+    isCompleted: Boolean
+    category: String
   }
 
-  type Comment {
-    _id: ID
-    commentText: String
-    createdAt: String
-  }
 
-  input ThoughtInput {
-    thoughtText: String!
-    thoughtAuthor: String!
+  input TaskInput {
+    taskText: String!
+    category: String!
   }
 
   input UserInput {
@@ -40,18 +35,18 @@ const typeDefs = `
   type Query {
     users: [User]
     user(username: String!): User
-    thoughts: [Thought]!
-    thought(thoughtId: ID!): Thought
+    tasks: [Task]!
+    task(taskId: ID!): Task
     me: User
   }
 
   type Mutation {
     addUser(input: UserInput!): Auth
     login(email: String!, password: String!): Auth
-    addThought(input: ThoughtInput!): Thought
-    addComment(thoughtId: ID!, commentText: String!): Thought
-    removeThought(thoughtId: ID!): Thought
-    removeComment(thoughtId: ID!, commentId: ID!): Thought
+    addTask(input: TaskInput!): String
+    removeTask(taskId: ID!): Task
+    completeTask(taskId: ID!, isCompleted: Boolean!): Task
+    updateTask(taskId: ID!, input: TaskInput!): Task
   }
 `;
 
