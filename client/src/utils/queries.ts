@@ -33,12 +33,6 @@ export const QUERY_SINGLE_TASK = gql`
       taskText
       taskAuthor
       createdAt
-      comments {
-        _id
-        commentText
-        commentAuthor
-        createdAt
-      }
     }
   }
 `;

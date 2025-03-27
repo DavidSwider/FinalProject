@@ -1,25 +1,28 @@
 import { useState, type FormEvent, type ChangeEvent } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
+import { QUERY_SINGLE_TASK } from '../../utils/queries';
+import { UPDATE_TASK } from '../../utils/mutations';
 
-import { ADD_COMMENT } from '../../utils/mutations';
-
-const CommentForm = ({ taskId }: any) => {
-  const [commentText, setCommentText] = useState('');
+const UpdateTaskForm = ({ taskId }: any) => {
+  const [taskText, settaskText] = useState('');
+  const [category, setCategory] = useState('');
   const [characterCount, setCharacterCount] = useState(0);
 
-  const [addComment, { error }] = useMutation(ADD_COMMENT);
+  const [updateTask, { error }] = useMutation(UPDATE_TASK);
 
   const handleFormSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     try {
-      await addComment({
+      await updateTask({
         variables: { 
-          taskId, commentText 
+          taskId, 
+          input: { taskText, category } 
         }
       });
 
-      setCommentText('');
+      settaskText('')
+      setCategory('')
     } catch (err) {
       console.error(err);
     }
@@ -28,9 +31,11 @@ const CommentForm = ({ taskId }: any) => {
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = event.target;
 
-    if (name === 'commentText' && value.length <= 280) {
-      setCommentText(value);
+    if (name === 'taskText' && value.length <= 280) {
+      settaskText(value);
       setCharacterCount(value.length);
+    } else {
+      setCategory(value);
     }
   };
 
@@ -51,9 +56,9 @@ const CommentForm = ({ taskId }: any) => {
       >
         <div className="col-12 col-lg-9">
           <textarea
-            name="commentText"
-            placeholder="Add your comment..."
-            value={commentText}
+            name="taskText"
+            placeholder="Update your task..."
+            value={taskText}
             className="form-input w-100"
             style={{ lineHeight: '1.5' }}
             onChange={handleChange}
@@ -70,4 +75,4 @@ const CommentForm = ({ taskId }: any) => {
   );
 };
 
-export default CommentForm;
+export default UpdateTaskForm;

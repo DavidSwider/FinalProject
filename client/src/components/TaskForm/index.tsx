@@ -9,7 +9,7 @@ import Auth from '../../utils/auth';
 
 const TaskForm = () => {
   const [taskText, setTaskText] = useState('');
-
+  const [category, setCategory] = useState('');
   const [characterCount, setCharacterCount] = useState(0);
 
   const [addTask, { error }] = useMutation
@@ -29,7 +29,7 @@ const TaskForm = () => {
       await addTask({
         variables: { input:{
           taskText,
-          taskAuthor: Auth.getProfile().data.username,
+          category,
         }},
       });
 
@@ -39,14 +39,16 @@ const TaskForm = () => {
     }
   };
 
-  const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    const { name, value } = event.target;
-
-    if (name === 'taskText' && value.length <= 280) {
-      setTaskText(value);
-      setCharacterCount(value.length);
-    }
-  };
+  const handleChange = (event: ChangeEvent<HTMLTextAreaElement | HTMLSelectElement>) => {
+      const { name, value } = event.target;
+  
+      if (name === 'taskText' && value.length <= 280) {
+        setTaskText(value);
+        setCharacterCount(value.length);
+      } else if (name === 'category') {
+        setCategory(value);
+      }
+    };
 
   return (
     <div>
@@ -65,6 +67,16 @@ const TaskForm = () => {
             className="flex-row justify-center justify-space-between-md align-center"
             onSubmit={handleFormSubmit}
           >
+            <label htmlFor="category">Choose a category:</label>
+
+<select name="category" id="category" onChange={handleChange} value = {category}
+>
+  <option value="other">other</option>
+  <option value="personal">personal</option>
+  <option value="work">work</option>
+  <option value="chores">chores</option>
+  <option value="school">school</option>
+</select>
             <div className="col-12 col-lg-9">
               <textarea
                 name="taskText"
