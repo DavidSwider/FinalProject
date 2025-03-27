@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
-import { Link } from 'react-router-dom';
 
 import CommentList from '../components/CommentList/index.tsx';
 import CommentForm from '../components/CommentForm/index.tsx';

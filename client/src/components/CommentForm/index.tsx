@@ -1,6 +1,5 @@
 import { useState, type FormEvent, type ChangeEvent } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
-import { QUERY_SINGLE_TASK } from '../../utils/queries';
+import { useMutation } from '@apollo/client';
 import { UPDATE_TASK } from '../../utils/mutations';
 
 const UpdateTaskForm = ({ taskId }: any) => {
@@ -54,7 +53,7 @@ const UpdateTaskForm = ({ taskId }: any) => {
         className="flex-row justify-center justify-space-between-md align-center"
         onSubmit={handleFormSubmit}
       >
-        
+
         <div className="col-12 col-lg-9">
           <textarea
             name="taskText"
