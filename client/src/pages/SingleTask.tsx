@@ -1,10 +1,12 @@
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
+import { Link } from 'react-router-dom';
 
 import CommentList from '../components/CommentList/index.tsx';
 import CommentForm from '../components/CommentForm/index.tsx';
 
 import { QUERY_SINGLE_TASK } from '../utils/queries.ts';
+import { REMOVE_TASK } from '../utils/mutations.ts';
 
 const SingleTask = () => {
   const { taskId } = useParams();
@@ -13,11 +15,30 @@ const SingleTask = () => {
     variables: { taskId: taskId },
   });
 
-  const task = data?.task || {};
 
+  const [RemoveTask, { error }] = useMutation(REMOVE_TASK);
+
+  const removeTask = async () => {
+    try {
+      await RemoveTask({
+        variables: { taskId: taskId },
+      });
+      window.location.replace('/');
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const task = data?.task || {};
+  console.log("Tasks:", task); 
   if (loading) {
     return <div>Loading...</div>;
   }
+
+  if(error) {
+    return <div>Error... {error.message}</div>;
+  }
+
   return (
     <div className="my-3">
       <h3 className="card-header bg-dark text-light p-2 m-0">
@@ -45,6 +66,9 @@ const SingleTask = () => {
       </div>
       <div className="m-3 p-4" style={{ border: '1px dotted #1a1a1a' }}>
         <CommentForm taskId={task._id} />
+      </div>
+      <div>
+        <button onClick={removeTask}>Remove Task</button>
       </div>
     </div>
   );

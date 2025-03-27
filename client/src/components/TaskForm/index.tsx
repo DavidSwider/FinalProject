@@ -9,8 +9,10 @@ import Auth from '../../utils/auth';
 
 const TaskForm = () => {
   const [taskText, setTaskText] = useState('');
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState('other');
   const [characterCount, setCharacterCount] = useState(0);
+
+  
 
   const [addTask, { error }] = useMutation
   (ADD_TASK, {

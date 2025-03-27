@@ -16,25 +16,27 @@ export const QUERY_USER = gql`
 `;
 
 export const QUERY_TASKS = gql`
-  query getTasks {
-    tasks {
-      _id
-      taskText
-      taskAuthor
-      createdAt
-    }
+query Tasks {
+  tasks {
+    _id
+    taskText
+    createdAt
+    isCompleted
+    category
   }
+}
 `;
 
 export const QUERY_SINGLE_TASK = gql`
-  query getSingleTask($taskId: ID!) {
-    task(taskId: $taskId) {
-      _id
-      taskText
-      taskAuthor
-      createdAt
-    }
+ query Query($taskId: ID!) {
+  task(taskId: $taskId) {
+    _id
+    taskText
+    createdAt
+    isCompleted
+    category
   }
+}
 `;
 
 export const QUERY_ME = gql`

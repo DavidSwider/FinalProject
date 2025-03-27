@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 
 interface Task {
   _id: string;
-  taskAuthor: string;
+ // taskAuthor: string;
   createdAt: string;
   taskText: string;
+  category: string;
+  isCompleted: boolean;
 }
 
 interface TaskListProps {
@@ -25,7 +27,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, title }) => {
         tasks.map((task) => (
           <div key={task._id} className="card mb-3">
             <h4 className="card-header bg-primary text-light p-2 m-0">
-              {task.taskAuthor} <br />
+              {task.category} <br />
               <span style={{ fontSize: '1rem' }}>
                 Added this Item on {new Date(Number(task.createdAt)).toLocaleString()}
               </span>
